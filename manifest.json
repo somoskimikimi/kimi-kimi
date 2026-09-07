@@ -1,0 +1,17 @@
+{
+  "name": "KIMI KIMI - Consulta de precios",
+  "short_name": "KIMI KIMI",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "archivo_000000076081f9a1430b002c8cffd1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
