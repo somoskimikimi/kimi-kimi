@@ -6,18 +6,140 @@
 
   <title>KIMI KIMI - Consulta de precios</title>
 
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192-1.png">
-<link rel="apple-touch-icon" href="./icon-192-1.png">
-  <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" href="./icon-192-1.png">
+  <meta name="theme-color" content="#ff7a00">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 30px 15px;
+      text-align: center;
+    }
+
+    .contenedor {
+      max-width: 450px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      margin-bottom: 5px;
+      font-size: 32px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: normal;
+      color: #666;
+    }
+
+    input {
+      width: 90%;
+      padding: 16px;
+      margin-top: 20px;
+      font-size: 20px;
+      text-align: center;
+      text-transform: uppercase;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #resultado {
+      margin-top: 25px;
+      font-size: 20px;
+      line-height: 1.7;
+    }
+
+    .precio {
+      font-size: 32px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
 
-  <h1>KIMI KIMI</h1>
-  <p>Consulta de precios</p >
+  <div class="contenedor">
+
+    <h1>KIMI KIMI</h1>
+    <h2>Consulta de precios</h2>
+
+    <input
+      type="text"
+      id="codigo"
+      placeholder="Escribe el código"
+      onkeydown="if(event.key==='Enter') buscar()"
+    >
+
+    <button onclick="buscar()">BUSCAR</button>
+
+    <div id="resultado"></div>
+
+  </div>
 
   <script>
+    const API =
+      "https://script.google.com/macros/s/AKfycbyHd464B5FIQazwOEMqD5CzgE-Y85pBfJj1Jxyl1bM86O30-5-_sG4WHEDrwEWfpcUKjw/exec";
+
+    async function buscar() {
+      const codigo = document.getElementById("codigo").value.trim();
+      const resultado = document.getElementById("resultado");
+
+      if (!codigo) {
+        resultado.innerHTML = "Escribe un código.";
+        return;
+      }
+
+      resultado.innerHTML = "Buscando...";
+
+      try {
+        const respuesta = await fetch(
+          API + "?codigo=" + encodeURIComponent(codigo)
+        );
+
+        const producto = await respuesta.json();
+        mostrarResultado(producto);
+
+      } catch (error) {
+        resultado.innerHTML =
+          "<strong>Error al consultar el inventario.</strong>";
+      }
+    }
+
+    function mostrarResultado(producto) {
+      const resultado = document.getElementById("resultado");
+
+      if (producto.encontrado) {
+        resultado.innerHTML =
+          "<strong>" + producto.marca + "</strong><br>" +
+          "Código: " + producto.codigo + "<br>" +
+          '<span class="precio">$' + producto.precio + "</span><br>" +
+          "Tallas: " + producto.tallas;
+      } else {
+        resultado.innerHTML =
+          "<strong>Producto no encontrado</strong>";
+      }
+    }
+
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js");
     }
